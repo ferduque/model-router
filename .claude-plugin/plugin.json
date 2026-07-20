@@ -1,0 +1,13 @@
+{
+  "name": "model-router",
+  "description": "Plan expensive, type cheap — your frontier model orchestrates, cheap open-weight workers (Kimi K3, GLM 5.2, DeepSeek V4 via one OpenRouter key) write the code. Session-start hook makes it the default for all token-intensive work.",
+  "version": "1.1.0",
+  "author": {
+    "name": "Fernando Rodríguez",
+    "url": "https://github.com/ferduque"
+  },
+  "homepage": "https://github.com/ferduque/model-router",
+  "repository": "https://github.com/ferduque/model-router",
+  "license": "MIT",
+  "keywords": ["openrouter", "kimi", "glm", "deepseek", "cost-optimization", "delegation", "orchestrator"]
+}

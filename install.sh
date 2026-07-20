@@ -19,12 +19,18 @@ fetch() { # fetch <filename> <dest>
 install_into() { # install_into <skills-parent-dir> <label>
   local dir="$1/model-router"
   mkdir -p "$dir"
-  fetch "SKILL.md" "$dir/SKILL.md"
+  fetch "skills/model-router/SKILL.md" "$dir/SKILL.md"
   echo "✓ Installed skill for $2 -> $dir"
 }
 
-# 1) Claude Code (always) + Copilot (if present, or create anyway — harmless)
-install_into "$HOME/.claude/skills" "Claude Code"
+# NOTE: for Claude Code, prefer the plugin (adds the always-on session hook):
+#   claude plugin marketplace add ferduque/model-router
+#   claude plugin install model-router@model-router
+# This script is the bare-skill path: Copilot, plus Claude Code without plugins.
+# Skip the ~/.claude/skills copy if you use the plugin (avoids a duplicate skill).
+if [ "${MODEL_ROUTER_PLUGIN:-}" != "1" ]; then
+  install_into "$HOME/.claude/skills" "Claude Code (bare skill — see plugin note above)"
+fi
 install_into "$HOME/.copilot/skills" "GitHub Copilot"
 
 # 2) Config file with key placeholder (never overwrite an existing key)

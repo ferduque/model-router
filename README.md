@@ -24,24 +24,32 @@ An [Agent Skill](https://docs.github.com/en/copilot/concepts/agents/about-agent-
 
 ## Install
 
-### One-liner (Claude Code + Copilot, macOS/Linux)
+### Claude Code — as a plugin (recommended)
+
+```bash
+claude plugin marketplace add ferduque/model-router
+claude plugin install model-router@model-router
+```
+
+(or `/plugin marketplace add ferduque/model-router` then `/plugin install` inside Claude Code)
+
+The plugin ships a **SessionStart hook** that injects the plan→delegate→review policy into every session — that's what makes it the default behavior instead of a skill the model may or may not consult. Then create your key file:
+
+```bash
+mkdir -p ~/.model-router && curl -fsSL https://raw.githubusercontent.com/ferduque/model-router/main/env.example -o ~/.model-router/env
+```
+
+Open `~/.model-router/env`, replace the placeholder with your OpenRouter API key, restart Claude Code.
+
+### Copilot / bare skill (no plugin support)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ferduque/model-router/main/install.sh | bash
 ```
 
-Then open `~/.model-router/env`, replace the placeholder with your OpenRouter API key, and restart your coding agent.
+Installs the skill into `~/.copilot/skills/` and `~/.claude/skills/` and creates the key file. Copilot also accepts `copilot skill add https://github.com/ferduque/model-router`. Since Copilot has no session hooks, add the rule from ["Make it the guaranteed default"](#make-it-the-guaranteed-default) to `.github/copilot-instructions.md` or `AGENTS.md`.
 
-**Mac, no terminal:** download this repo (green **Code** button → Download ZIP), unzip, double-click `Setup Model Router.command`. It installs everything and opens the key file for you to paste into.
-
-### Manual
-
-1. Copy this folder to `~/.claude/skills/model-router/` (Claude Code) and/or `~/.copilot/skills/model-router/` (Copilot)
-2. Copy `env.example` to `~/.model-router/env` and paste your OpenRouter key into it
-3. Restart Claude Code / Copilot
-
-GitHub Copilot also accepts: `copilot skill add https://github.com/ferduque/model-router`
-For a single repo (any harness), drop the folder into `.github/skills/model-router/` instead.
+**Mac, no terminal:** download this repo (green **Code** button → Download ZIP), unzip, double-click `Setup Model Router.command`. It installs the bare skill and opens the key file for you to paste into.
 
 ## Use
 
@@ -55,7 +63,7 @@ Trivial edits, design decisions, and security-critical code are never delegated 
 
 ### Make it the guaranteed default
 
-Skills are consulted, not forced. One rule in your always-loaded instructions file makes plan-and-delegate automatic in every session — `~/CLAUDE.md` (or a project `CLAUDE.md`) for Claude Code, `.github/copilot-instructions.md` or `AGENTS.md` for Copilot:
+**Plugin users are done** — the SessionStart hook already injects the policy into every session. Only two setups need a rule in an always-loaded instructions file: Copilot (`.github/copilot-instructions.md` or `AGENTS.md`) and bare-skill Claude Code installs (`~/CLAUDE.md`):
 
 ```
 Cost policy: for token-intensive implementation work, follow the

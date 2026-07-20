@@ -140,11 +140,14 @@ Tell the user: which worker ran, what changed (files + one-line summary), test r
 
 ## Making this automatic (setup hint)
 
-Skills are consulted, not forced. To make plan-and-delegate the guaranteed default in every session, the user should add one rule to their always-loaded instructions file — `~/CLAUDE.md` or the project's `CLAUDE.md` for Claude Code; `.github/copilot-instructions.md` or `AGENTS.md` for Copilot:
+Skills are consulted, not forced. Installed **as the plugin**, a SessionStart hook injects the plan-delegate-review policy into every Claude Code session automatically — nothing else needed. Two cases still need one rule in an always-loaded instructions file:
+
+- **Copilot** (no session hooks): add to `.github/copilot-instructions.md` or `AGENTS.md`
+- **Claude Code with only the bare skill installed** (no plugin): add to `~/CLAUDE.md`
 
 > For token-intensive implementation work, follow the model-router skill by default: plan fully, delegate implementation to a cheap worker, review the result. Don't ask permission to delegate.
 
-If you notice the user relies on this skill but has no such rule, suggest adding it once.
+If you notice the user relies on this skill without the plugin hook or such a rule, suggest one of the two once.
 
 ## Troubleshooting
 
