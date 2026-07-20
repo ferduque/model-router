@@ -1,8 +1,8 @@
 # model-router
 
-**Your frontier model thinks. Cheap open-weight models type.**
+**Your frontier model thinks. Cheap open-weight models type. By default.**
 
-An [Agent Skill](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) for **Claude Code** and **GitHub Copilot** that lets your orchestrator model (Claude Fable, Claude Opus, Copilot — whatever you run) delegate implementation work to cheap open-weight workers, then review the result before anything lands.
+An [Agent Skill](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) for **Claude Code** and **GitHub Copilot** that turns cost optimization into a standing policy: for every token-intensive task, your orchestrator model (Claude Fable, Claude Opus, Copilot — whatever you run) writes a full implementation plan, hands it to a cheap open-weight worker, and reviews the result before anything lands. You don't ask for it each time — planning expensive and typing cheap becomes how the model works.
 
 - 🧠 **Orchestrator** — plans the task, writes the work order, reviews the diff, runs the tests, owns git
 - ⌨️ **Workers** — Kimi K3, GLM 5.2, DeepSeek V4 running as headless Claude Code sessions via OpenRouter
@@ -45,15 +45,23 @@ For a single repo (any harness), drop the folder into `.github/skills/model-rout
 
 ## Use
 
-Just ask, in your normal Claude Code or Copilot session:
+Nothing to invoke — ask for work as you normally would:
 
-> "Use model-router: have **glm** build the settings page from the spec in docs/settings.md"
+> "Build the settings page from the spec in docs/settings.md"
 
-> "Delegate this refactor to **deepseek**, review it, and run the tests"
+The orchestrator plans the task in full, picks the cheapest worker that can survive it (announcing which and why), spawns it, reads the diff, runs your tests, and retries or takes over if the worker fails twice. Naming a worker ("have **kimi** do it") or saying "do it yourself" always overrides the default. Workers can't commit, can't run arbitrary commands, and never see your API keys.
 
-> "Build this feature with the cheapest worker that can handle it"
+Trivial edits, design decisions, and security-critical code are never delegated — briefing a worker for a 3-line change costs more than the change.
 
-The orchestrator writes a work order, spawns the worker, reads the diff, runs your tests, and retries or takes over if the worker fails twice. Workers can't commit, can't run arbitrary commands, and never see your API keys.
+### Make it the guaranteed default
+
+Skills are consulted, not forced. One rule in your always-loaded instructions file makes plan-and-delegate automatic in every session — `~/CLAUDE.md` (or a project `CLAUDE.md`) for Claude Code, `.github/copilot-instructions.md` or `AGENTS.md` for Copilot:
+
+```
+Cost policy: for token-intensive implementation work, follow the
+model-router skill by default — plan fully, delegate implementation to a
+cheap worker, review the result. Don't ask permission to delegate.
+```
 
 ## How it works
 
